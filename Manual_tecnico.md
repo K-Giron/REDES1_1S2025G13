@@ -349,3 +349,17 @@ Si necesitas más detalles sobre el presupuesto o ajustes en los equipos, no dud
 ##### SW13 CLIENTE
 
 <img src="./imagenes/CONFIGURACION SW13.GIF">
+
+### Ping entre hosts
+
+Ping entre host de Ventas
+![alt text](/imagenes/pingVentas.png)
+
+Ping entre host de Seguridad
+![alt text](/imagenes/pingSeguridad.png)
+
+Ping entre host de Seguridad y Ventas
+![alt text](/imagenes/pingMix.png)
+
+Ping entre hosts de Recepción
+![alt text](/imagenes/pingRecep.png)
