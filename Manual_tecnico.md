@@ -44,3 +44,85 @@ Departamentos y VLANs
 ### Bosquejo imagen
 -   Mensaje ARP e ICMP en simulación con los host AUPC1 y RMPC6
 ![alt text](imagenes/imagen-10.jpg)
+
+### CONFIGURACIONES DE LOS SWITCH MODO CLIENTE
+
+
+##### MSW1 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW1.GIF">
+
+
+##### SERVER
+<img src="./imagenes/CONFIGURACION SERVER.GIF">
+
+##### MSW2 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW2.GIF">
+
+##### MSW3 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW3.GIF">
+
+##### MSW4 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW4.GIF">
+
+##### MSW9 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW9.GIF">
+
+##### MSW10 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW10.GIF">
+
+##### SW0 CLIENTE
+<img src="./imagenes/CONFIGURACION SW0.GIF">
+
+##### SW1 CLIENTE
+<img src="./imagenes/CONFIGURACION SW1.GIF">
+
+##### SW2 CLIENTE
+<img src="./imagenes/CONFIGURACION SW2.GIF">
+
+##### SW3 CLIENTE
+<img src="./imagenes/CONFIGURACION SW3.GIF">
+
+##### SW4 CLIENTE
+<img src="./imagenes/CONFIGURACION SW4.GIF">
+
+##### MSW6 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW6.GIF">
+
+##### MSW7 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW7.GIF">
+
+##### SW8 CLIENTE
+<img src="./imagenes/CONFIGURACION SW8.GIF">
+
+##### SW9 CLIENTE
+<img src="./imagenes/CONFIGURACION SW9.GIF">
+
+##### SW10 CLIENTE
+<img src="./imagenes/CONFIGURACION SW10.GIF">
+
+##### MSW11 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW11.GIF">
+
+##### SW6 CLIENTE
+<img src="./imagenes/CONFIGURACION SW6.GIF">
+
+##### SW7 CLIENTE
+<img src="./imagenes/CONFIGURACION SW7.GIF">
+
+##### MSW8 CLIENTE
+<img src="./imagenes/CONFIGURACION MSW8.GIF">
+
+##### SW11 CLIENTE
+<img src="./imagenes/CONFIGURACION SW11.GIF">
+
+##### SW12 CLIENTE
+<img src="./imagenes/CONFIGURACION SW12.GIF">
+
+##### SW13 CLIENTE
+<img src="./imagenes/CONFIGURACION SW13.GIF">
+
+
+
+
+
+
