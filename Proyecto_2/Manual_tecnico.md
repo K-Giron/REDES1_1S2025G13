@@ -76,14 +76,14 @@ vlan 42
 name Seguridad
 exit
 
-#### 2. Configuración de enlaces troncales en todos los Switch que conectan entre sí
+##### 2. Configuración de enlaces troncales en todos los Switch que conectan entre sí
 
 interface FastEthernet0/1
 switchport mode trunk
 -- switchport trunk encapsulation dot1q
 exit
 
-#### 3. Configuración de Switches "SW6" y "SW8" en modo cliente
+##### 3. Configuración de Switches "SW6" y "SW8" en modo cliente
 
 enable
 configure terminal
@@ -93,28 +93,18 @@ vtp password usac2025
 vtp mode client
 exit
 
-#### 4. Configuración del switch multicapa "MS8"
+##### 4. Configuración del switch multicapa "MS8"
 
 enable
 configure terminal
 
-! Activamos el enrutamiento entre VLANs
 ip routing
 
-! Configuramos el dominio VTP
 vtp domain Grupo13
 vtp password usac2025
 vtp mode server
 
-! Creamos las VLANs con sus nombres correspondientes
-vlan 12
- name Estudiantes
-vlan 22
- name Docentes
-vlan 32
- name Seguridad
-vlan 42
- name Biblioteca
+
 
 ! Interfaces VLAN con IP correspondiente (puerta de enlace)
 interface vlan 42
@@ -135,7 +125,7 @@ interface vlan 32
 
 exit
 
-#### 5. Asignar puertos a VLANs (Cualquier swtich con equipos de cómputo conectadas)
+##### 5. Asignar puertos a VLANs (Cualquier swtich con equipos de cómputo conectadas)
 
 interface FastEthernet0/11
 switchport mode access
@@ -148,3 +138,264 @@ switchport access vlan 42
 exit
 
 
+#### Área de CUNOROC
+
+##### 1. Switch "SW3"(VTP Server)
+
+enable
+configure terminal
+
+vtp domain Grupo13
+vtp password usac2025
+vtp mode server
+
+vlan 42
+ name Biblioteca
+vlan 12
+ name Estudiantes
+vlan 22
+ name Docentes
+vlan 32
+ name Seguridad
+
+interface range fa0/1 - 2
+ switchport mode trunk
+
+exit
+
+
+
+##### 2. Configuración de Switches "SW4" y "SW2" en modo cliente
+
+enable
+configure terminal
+
+vtp domain Grupo13
+vtp password usac2025
+vtp mode client
+
+interface range fa0/1-2
+ switchport mode trunk
+
+exit
+
+##### 3. Asignar puertos a VLANs (Cualquier swtich con equipos de cómputo conectadas)
+
+SW4
+
+interface FastEthernet0/11
+switchport mode access
+switchport access vlan 42
+exit
+
+interface range FastEthernet0/12
+switchport mode access
+switchport access vlan 32
+exit
+
+SW3
+
+interface FastEthernet0/3
+switchport mode access
+switchport access vlan 12
+exit
+
+SW2
+
+interface FastEthernet0/3
+switchport mode access
+switchport access vlan 22
+exit
+
+
+#### Área de CUNOC
+
+##### 1. Switch "MS0"(VTP Server) 
+
+conf t
+vtp domain Grupo13
+vtp mode server
+vtp password usac2025
+exit
+
+conf t
+vlan 12
+ name Estudiantes
+vlan 22
+ name Docentes
+vlan 32
+ name Seguridad
+vlan 42
+ name Biblioteca
+exit
+
+
+##### 2. VTP - MS1 y MS2 (modo cliente)
+
+conf t
+vtp domain Grupo13
+vtp mode client
+vtp password usac2025
+exit
+
+##### 3. Configuración de enlaces troncales en todos los Switch que conectan entre sí
+
+MS1 y MS2
+en
+config t
+interface range FastEthernet0/1-2
+switchport mode trunk
+switchport trunk encapsulation dot1q
+exit
+
+MS0
+en
+config t
+interface range FastEthernet0/1-5
+switchport mode trunk
+switchport trunk encapsulation dot1q
+exit
+
+SW0, SW9 Y SW1
+en
+config t
+interface FastEthernet0/1
+switchport mode trunk
+exit
+
+##### 4. Configurar interfaces VLAN con HSRP (MS1 y MS2)
+
+conf t
+interface vlan 12
+ ip address 172.16.13.3 255.255.255.192
+ standby 12 ip 172.16.13.2
+ standby 12 priority 110
+ standby 12 preempt
+
+interface vlan 42
+ ip address 172.16.13.67 255.255.255.192
+ standby 42 ip 172.16.13.66
+ standby 42 priority 110
+ standby 42 preempt
+
+interface vlan 22
+ ip address 172.16.13.131 255.255.255.192
+ standby 22 ip 172.16.13.130
+ standby 22 priority 110
+ standby 22 preempt
+
+interface vlan 32
+ ip address 172.16.13.195 255.255.255.248
+ standby 32 ip 172.16.13.194
+ standby 32 priority 110
+ standby 32 preempt
+exit
+
+##### 5. Comandos para MS1 (Switch Multicapa 1 — Activo en HSRP)
+
+en
+config ter
+interface vlan 12
+ ip address 172.16.13.2 255.255.255.192
+ standby 12 ip 172.16.13.1
+ standby 12 priority 110
+ standby 12 preempt
+
+interface vlan 42
+ ip address 172.16.13.66 255.255.255.192
+ standby 42 ip 172.16.13.65
+ standby 42 priority 110
+ standby 42 preempt
+
+interface vlan 22
+ ip address 172.16.13.130 255.255.255.192
+ standby 22 ip 172.16.13.129
+ standby 22 priority 110
+ standby 22 preempt
+
+interface vlan 32
+ ip address 172.16.13.194 255.255.255.248
+ standby 32 ip 172.16.13.193
+ standby 32 priority 110
+ standby 32 preempt
+
+##### 6. Comandos para MS2 (Switch Multicapa 2 — Respaldo HSRP)
+
+en
+config ter
+interface vlan 12
+ ip address 172.16.13.3 255.255.255.192
+ standby 12 ip 172.16.13.1
+ standby 12 priority 100
+ standby 12 preempt
+
+interface vlan 42
+ ip address 172.16.13.67 255.255.255.192
+ standby 42 ip 172.16.13.65
+ standby 42 priority 100
+ standby 42 preempt
+
+interface vlan 22
+ ip address 172.16.13.131 255.255.255.192
+ standby 22 ip 172.16.13.129
+ standby 22 priority 100
+ standby 22 preempt
+
+interface vlan 32
+ ip address 172.16.13.195 255.255.255.248
+ standby 32 ip 172.16.13.193
+ standby 32 priority 100
+ standby 32 preempt
+
+##### 7. Asignar puertos a VLANs en switches de acceso
+conf t
+interface range fa0/11-12
+ switchport mode access
+ switchport access vlan 12
+exit
+
+#### Area de CUM
+
+##### 1. Asignar puertos a VLANs en switches de acceso
+conf t
+interface fa0/14
+ switchport mode access
+ switchport access vlan 42
+exit
+
+### Direccionamientos asignados
+
+
+|Equipo|Departamento|Vlan|Dirección IP|Area|
+|-------|------|-----|-------------|-------|
+|Seguridad2|Seguridad|32|192.168.13.226|CUNDECH|
+|Biblioteca3|Biblioteca|42|192.168.13.2|CUNDECH|
+|Biblioteca4|Biblioteca|42|192.168.13.3|CUNDECH|
+|Estudiantes6|Estudiantes|12|192.168.13.130|CUNDECH|
+|Estudiantes7|Estudiantes|12|192.168.13.131|CUNDECH|
+|Docentes7|Docentes|22|192.168.13.194|CUNDECH|
+|Docentes6|Docentes|22|192.168.13.195|CUNDECH|
+
+
+|Equipo|Departamento|Vlan|Dirección IP|Area|
+|-------|------|-----|-------------|-------|
+|Seguridad3|Seguridad|32|192.148.13.227|CUNOROC|
+|Biblioteca1|Biblioteca|42|192.148.13.4|CUNOROC|
+|Estudiantes3|Estudiantes|12|192.148.13.132|CUNOROC|
+|Docentes3|Docentes|22|192.148.13.196|CUNOROC|
+
+
+|Equipo|Departamento|Vlan|Dirección IP|Area|
+|-------|------|-----|-------------|-------|
+|Seguridad4|Seguridad|32|172.16.13.196|CUNOC|
+|Estudiantes1|Estudiantes|12|172.16.13.4|CUNOC|
+|Estudiantes2|Estudiantes|12|172.16.13.5|CUNOC|
+|Docentes1|Docentes|22|172.16.13.132|CUNOC|
+|Docentes2|Docentes|22|172.16.13.133|CUNOC|
+
+|Equipo|Departamento|Vlan|Dirección IP|Area|
+|-------|------|-----|-------------|-------|
+|Seguridad1|Seguridad|32|192.158.13.226|CUM|
+|Estudiantes5|Estudiantes|12|192.158.13.129|CUM|
+|Docentes5|Docentes|22|192.158.13.194|CUM|
+|Biblioteca2|Biblioteca|22|192.158.13.2|CUM|
