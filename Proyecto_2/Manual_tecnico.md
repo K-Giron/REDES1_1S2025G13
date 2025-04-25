@@ -4,7 +4,9 @@
 
 El proyecto tiene como objetivo diseñar y configurar una red de comunicaciones que interconecte los centros de la Universidad de San Carlos de Guatemala (USAC). El estudiante deberá crear una topología de red utilizando Cisco Packet Tracer, simulando la interconexión de los siguientes centros: Sede Central, Centro Universitario de Nor Occidente (CUNOROC), Centro Universitario de Occidente (CUNOC), Centro Universitario de Chimaltenango (CUNDECH), y el Centro Universitario Metropolitano (CUM). El proyecto incluirá la segmentación de la red mediante la creación de VLANs para distintas áreas de la universidad, como Estudiantes, Docentes, Biblioteca, y Seguridad. Además, se implementará el ruteo inter-VLAN utilizando la técnica de Router on a Stick y configurando interfaces virtuales. El estudiante también deberá aplicar VLSM y FLSM para la asignación eficiente de direcciones IP, y configurar el ruteo estático y dinámico para asegurar la conectividad entre los centros.
 
-## Subneteo de Áreas
+## Solución
+
+### Subneteo de Áreas
 
 #### VLSM AREA DE CUNDECH
 
@@ -49,3 +51,100 @@ El proyecto tiene como objetivo diseñar y configurar una red de comunicaciones 
 | Estudiantes | 12         | 45              | 192.158.13.128 | /26     | 192.158.13.130 | 192.158.13.190 | 192.158.13.191 | 62               |
 | Docentes    | 22         | 25              | 192.158.13.192 | /27     | 192.158.13.194 | 192.158.13.222 | 192.158.13.223 | 30               |
 | Seguridad   | 32         | 10              | 192.158.13.224 | /28     | 192.158.13.226 | 192.158.13.238 | 192.158.13.239 | 14               |
+
+
+### Comandos de configuracion
+
+#### Área de CUNDECH
+
+##### 1. Switch "SW7"(VTP Server)
+
+enable
+configure terminal
+
+vtp domain Grupo13
+vtp password usac2025
+vtp mode server 
+
+vlan 12
+name Estudiantes
+vlan 22
+name Docentes
+vlan 32
+name Biblioteca
+vlan 42
+name Seguridad
+exit
+
+#### 2. Configuración de enlaces troncales en todos los Switch que conectan entre sí
+
+interface FastEthernet0/1
+switchport mode trunk
+-- switchport trunk encapsulation dot1q
+exit
+
+#### 3. Configuración de Switches "SW6" y "SW8" en modo cliente
+
+enable
+configure terminal
+
+vtp domain Grupo13
+vtp password usac2025
+vtp mode client
+exit
+
+#### 4. Configuración del switch multicapa "MS8"
+
+enable
+configure terminal
+
+! Activamos el enrutamiento entre VLANs
+ip routing
+
+! Configuramos el dominio VTP
+vtp domain Grupo13
+vtp password usac2025
+vtp mode server
+
+! Creamos las VLANs con sus nombres correspondientes
+vlan 12
+ name Estudiantes
+vlan 22
+ name Docentes
+vlan 32
+ name Seguridad
+vlan 42
+ name Biblioteca
+
+! Interfaces VLAN con IP correspondiente (puerta de enlace)
+interface vlan 42
+ ip address 192.168.13.1 255.255.255.128
+ no shutdown
+
+interface vlan 12
+ ip address 192.168.13.129 255.255.255.192
+ no shutdown
+
+interface vlan 22
+ ip address 192.168.13.193 255.255.255.224
+ no shutdown
+
+interface vlan 32
+ ip address 192.168.13.225 255.255.255.248
+ no shutdown
+
+exit
+
+#### 5. Asignar puertos a VLANs (Cualquier swtich con equipos de cómputo conectadas)
+
+interface FastEthernet0/11
+switchport mode access
+switchport access vlan 32
+exit
+
+interface range FastEthernet0/12-13
+switchport mode access
+switchport access vlan 42
+exit
+
+
